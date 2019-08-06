@@ -15,7 +15,7 @@ type StepID struct{ value int64 }
 
 type StepRepository interface {
 	Get(context.Context, StepID) (*Step, error)
-	Update(context.Context, *Step) error
+	Save(context.Context, *Step) error
 }
 
 // ID returns the identifier of a step.

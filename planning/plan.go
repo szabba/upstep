@@ -13,8 +13,7 @@ type PlanRepository interface {
 	// TODO: Needs a better name.
 	// Something like this will be needed for updating plans.
 	GetMany(context.Context, PlannerID, []*Plan) error
-	Add(context.Context, *Plan) error
-	Update(context.Context, *Plan) error
+	Save(context.Context, *Plan) error
 }
 
 // Progress measures the progress towards the plan goal.

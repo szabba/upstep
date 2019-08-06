@@ -10,8 +10,7 @@ type PlannerID struct{ value int64 }
 
 type PlannerRepository interface {
 	Get(context.Context, PlannerID) (*Planner, error)
-	Add(context.Context, *Planner) error
-	Update(context.Context, *Planner) error
+	Save(context.Context, *Planner) error
 }
 
 // CreatePlan creates a plan associated with the planner.

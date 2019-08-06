@@ -35,7 +35,7 @@ func TestModel_CreatePlan(t *testing.T) {
 	// When:
 
 	plan := planner.CreatePlan(ctx, planningSvc, goal, constraints)
-	err = planRepo.Add(ctx, plan)
+	err = planRepo.Save(ctx, plan)
 	AssertNoError(t, err)
 
 	// Then:
@@ -81,7 +81,7 @@ func TestModel_MarkTakenSteps(t *testing.T) {
 	AssertNoError(t, err)
 
 	// Then:
-	err = plannerRepo.Update(ctx, planner)
+	err = plannerRepo.Save(ctx, planner)
 	AssertNoError(t, err)
 
 	reloadedPlan, err := planRepo.Get(ctx, planID)
