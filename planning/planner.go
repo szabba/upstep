@@ -8,6 +8,7 @@ type Planner struct{}
 // A PlannerID identifies a planner.
 type PlannerID struct{ value int64 }
 
+// A PlannerRepository persistently stores and later retrieves planners.
 type PlannerRepository interface {
 	Get(context.Context, PlannerID) (*Planner, error)
 	Save(context.Context, *Planner) error

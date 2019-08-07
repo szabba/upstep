@@ -13,6 +13,7 @@ type Step struct{}
 // A StepID identifies a step.
 type StepID struct{ value int64 }
 
+// A StepRepository persistently stores and later retrieves steps.
 type StepRepository interface {
 	Get(context.Context, StepID) (*Step, error)
 	Save(context.Context, *Step) error

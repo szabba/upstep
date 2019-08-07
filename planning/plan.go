@@ -8,6 +8,7 @@ type Plan struct{}
 // A PlanID identifies a plan.
 type PlanID struct{ value int64 }
 
+// A PlanRepository persistently stores and later retrieves plans.
 type PlanRepository interface {
 	Get(context.Context, PlanID) (*Plan, error)
 	// TODO: Needs a better name.
