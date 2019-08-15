@@ -5,5 +5,9 @@ steps:
 - name: build
   image: golang:1.12
   commands:
+  - go mod tidy
+  - ./check-diff-empty.sh
+  - go generate -x ./...
+  - ./check-diff-empty.sh
   - go build ./...
   - go test -cover -coverpkg ./... ./...
