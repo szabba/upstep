@@ -19,7 +19,7 @@ type PlannerRepository interface {
 // A PlannerID identifies a planner.
 type PlannerID struct{ value string }
 
-// PlannerIDOf creates a planner ID from an opaque value.
+// PlannerIDOf creates a planner ID from a raw string value.
 func PlannerIDOf(value string) PlannerID {
 	return PlannerID{value}
 }
@@ -36,8 +36,8 @@ func InitialPlannerRevision() PlannerRevision {
 	return PlannerRevision{}
 }
 
-// PlannerRevisionOf turns a string into a PlannerRevision.
-// It is used by the persistence code while loading a stored planner.
+// PlannerRevisionOf turns a string into a planner revision.
+// It is used by the persistence code for concurrency control.
 func PlannerRevisionOf(value string) PlannerRevision {
 	return PlannerRevision{value}
 }
