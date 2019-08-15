@@ -4,7 +4,15 @@ import "context"
 
 // A PlannerRepository persistently stores and later retrieves planners.
 type PlannerRepository interface {
+
+	// Get retrieves the planner with the given ID from a backing storage.
+	//
+	// When a planner is not found the error will be ErrNotFound.
 	Get(context.Context, PlannerID) (*Planner, error)
+
+	// Save stores the given planner.
+	//
+	// The planner must have an assigned ID.
 	Save(context.Context, *Planner) error
 }
 
@@ -34,7 +42,7 @@ func PlannerRevisionOf(value string) PlannerRevision {
 	return PlannerRevision{value}
 }
 
-// IsInitial tells whether the planner was stored yet.
+// IsInitial returns true when the containing planner was not stored yet.
 func (rev PlannerRevision) IsInitial() bool { return rev.value == "" }
 
 // Value is the raw string value of the planner revision.
