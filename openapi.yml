@@ -1,0 +1,84 @@
+swagger: "2.0"
+info:
+  version: "0.1.0"
+  title: "upStep API"
+basePath: "/api"
+
+tags:
+- name: "plan"
+  description: "A plan helps keep track progress towards a goal."
+- name: "step"
+  description: "Steps that can be taken."
+schemes:
+- "https"
+
+paths:
+  /plan/{id}:
+    get:
+      tags:
+      - "plan"
+      summary: "Get the details of a plan"
+      description: ""
+      operationId: "get-plan"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "path"
+        name: "id"
+        description: "Pet object that needs to be added to the store"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "Success"
+          schema:
+            $ref: "#/definitions/Plan"
+        404:
+          description: "Not Found"
+
+definitions:
+
+  Plan:
+    type: "object"
+    properties:
+      ID:
+        type: "string"
+      Name:
+        type: "string"
+      Goals:
+        type: "array"
+        items:
+          $ref: "#/definitions/PlanGoal"
+      Steps:
+        type: "array"
+        items:
+          type: "array"
+          items:
+            $ref: "#/definitions/PlanStep"
+      Status:
+        type: "string"
+        description: "Plan Status"
+        enum:
+        - "Active"
+        - "Suspended"
+        - "Complete"
+
+  PlanGoal:
+    type: "object"
+    properties:
+      StepID:
+        type: "string"
+      Name:
+        type: "string"
+      Achieved:
+        type: "boolean"
+
+  PlanStep:
+    type: "object"
+    properties:
+      StepID:
+        type: "string"
+      Name:
+        type: "string"
+      Taken:
+        type: "boolean"
