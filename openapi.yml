@@ -4,13 +4,12 @@ info:
   title: "upStep API"
 basePath: "/api"
 
-tags:
-- name: "plan"
-  description: "A plan helps keep track progress towards a goal."
-- name: "step"
-  description: "Steps that can be taken."
 schemes:
 - "https"
+
+tags:
+- name: "plan"
+  description: "A plan helps keep track of progress towards a goal."
 
 paths:
   /plan/{id}:
@@ -25,7 +24,7 @@ paths:
       parameters:
       - in: "path"
         name: "id"
-        description: "Pet object that needs to be added to the store"
+        description: "Unique identifier of the plan."
         required: true
         type: "string"
       responses:
