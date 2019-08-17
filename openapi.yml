@@ -44,16 +44,10 @@ definitions:
         type: "string"
       Name:
         type: "string"
-      Goals:
-        type: "array"
-        items:
-          $ref: "#/definitions/PlanGoal"
       Steps:
         type: "array"
         items:
-          type: "array"
-          items:
-            $ref: "#/definitions/PlanStep"
+          $ref: "#/definitions/PlanStep"
       Status:
         type: "string"
         description: "Plan Status"
@@ -62,16 +56,6 @@ definitions:
         - "Suspended"
         - "Complete"
 
-  PlanGoal:
-    type: "object"
-    properties:
-      StepID:
-        type: "string"
-      Name:
-        type: "string"
-      Achieved:
-        type: "boolean"
-
   PlanStep:
     type: "object"
     properties:
@@ -79,5 +63,11 @@ definitions:
         type: "string"
       Name:
         type: "string"
+      Goal:
+        type: "boolean"
       Taken:
         type: "boolean"
+      NextStepIDs:
+        type: "array"
+        items:
+          type: "string"
