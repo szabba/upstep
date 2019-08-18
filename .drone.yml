@@ -8,6 +8,8 @@ trigger:
 steps:
 - name: build
   image: golang:1.12
+  environment:
+    GOPROXY: https://proxy.golang.org
   commands:
   - git merge-base --is-ancestor master HEAD || (echo "Cannot fast-forward merge into master." && exit 1)
   - go mod tidy
