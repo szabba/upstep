@@ -1,0 +1,73 @@
+swagger: '2.0'
+info:
+  version: '0.1.0'
+  title: 'upStep API'
+basePath: '/api'
+
+schemes:
+- 'https'
+
+tags:
+- name: 'plan'
+  description: 'A plan helps keep track of progress towards a goal.'
+
+paths:
+  /plan/{id}:
+    get:
+      tags:
+      - 'plan'
+      summary: 'Get the details of a plan'
+      description: ''
+      operationId: 'get-plan'
+      produces:
+      - 'application/json'
+      parameters:
+      - in: 'path'
+        name: 'id'
+        description: 'Unique identifier of the plan.'
+        required: true
+        type: 'string'
+      responses:
+        200:
+          description: 'Success'
+          schema:
+            $ref: '#/definitions/Plan'
+        404:
+          description: 'Not Found'
+
+definitions:
+
+  Plan:
+    type: 'object'
+    properties:
+      ID:
+        type: 'string'
+      Name:
+        type: 'string'
+      Steps:
+        type: 'array'
+        items:
+          $ref: '#/definitions/PlanStep'
+      Status:
+        type: 'string'
+        description: 'Plan Status'
+        enum:
+        - 'Active'
+        - 'Suspended'
+        - 'Complete'
+
+  PlanStep:
+    type: 'object'
+    properties:
+      StepID:
+        type: 'string'
+      Name:
+        type: 'string'
+      Goal:
+        type: 'boolean'
+      Taken:
+        type: 'boolean'
+      NextStepIDs:
+        type: 'array'
+        items:
+          type: 'string'
