@@ -2,6 +2,7 @@ package docstore
 
 import (
 	"context"
+	"fmt"
 
 	"gocloud.dev/docstore"
 
@@ -12,8 +13,15 @@ type PlannerRepository struct {
 	coll *docstore.Collection
 }
 
-func NewPlannerRepository(coll *docstore.Collection) *PlannerRepository {
-	return &PlannerRepository{coll}
+func NewPlannerRepository() (*PlannerRepository, error) {
+	ctx := context.Background()
+	url := envOrElse("PLANNER_COLLECTION_URL", "mem://planners/ID")
+	coll, err := docstore.OpenCollection(ctx, url)
+	repo := &PlannerRepository{coll}
+	if err != nil {
+		return nil, fmt.Errorf("cannot create %T: %s", repo, err)
+	}
+	return repo, err
 }
 
 var _ planning.PlannerRepository = new(PlannerRepository)

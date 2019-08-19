@@ -2,6 +2,7 @@ package docstore
 
 import (
 	"context"
+	"fmt"
 
 	"gocloud.dev/docstore"
 
@@ -12,8 +13,15 @@ type StepRepository struct {
 	coll *docstore.Collection
 }
 
-func NewStepRepository(coll *docstore.Collection) *StepRepository {
-	return &StepRepository{coll}
+func NewStepRepository() (*StepRepository, error) {
+	ctx := context.Background()
+	url := envOrElse("STEP_COLLECTION_URL", "mem://ID")
+	coll, err := docstore.OpenCollection(ctx, url)
+	repo := &StepRepository{coll}
+	if err != nil {
+		return nil, fmt.Errorf("cannot create %T: %s", repo, err)
+	}
+	return repo, err
 }
 
 var _ planning.StepRepository = new(StepRepository)
