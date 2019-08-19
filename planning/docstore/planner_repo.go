@@ -8,33 +8,6 @@ import (
 	"github.com/szabba/upstep/planning"
 )
 
-type _PlannerDoc struct {
-	ID               string
-	DocstoreRevision interface{}
-}
-
-func (doc _PlannerDoc) ToDomain(coll *docstore.Collection) (*planning.Planner, error) {
-	id := planning.PlannerIDOf(doc.ID)
-	revString, err := coll.RevisionToString(doc.DocstoreRevision)
-	if err != nil {
-		return nil, err
-	}
-	rev := planning.PlannerRevisionOf(revString)
-	planner := planning.NewPlanner(id, rev)
-	return planner, nil
-}
-
-func (doc *_PlannerDoc) FromDomain(planner *planning.Planner, coll *docstore.Collection) error {
-	doc.ID = planner.ID().Value()
-	if !planner.Revision().IsInitial() {
-		revString := planner.Revision().Value()
-		rev, err := coll.StringToRevision(revString)
-		doc.DocstoreRevision = rev
-		return err
-	}
-	return nil
-}
-
 type PlannerRepository struct {
 	coll *docstore.Collection
 }
