@@ -21,11 +21,23 @@ type PlanRepository interface {
 
 // A Plan keeps track of progress towards a goal.
 type Plan struct {
-	id  PlanID
-	rev PlanRevision
+	id        PlanID
+	rev       PlanRevision
+	plannerID PlannerID
+}
+
+// NewPlan creeates a new plan.
+func NewPlan(id PlanID, planner *Planner, rev PlanRevision) *Plan {
+	return &Plan{
+		id:        id,
+		rev:       rev,
+		plannerID: planner.ID(),
+	}
 }
 
 // Progress measures the progress towards the plan goal.
+//
+// TODO: Implement.
 func (plan *Plan) Progress() Progress {
 	return Progress{}
 }
