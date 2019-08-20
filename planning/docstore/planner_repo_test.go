@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/szabba/assert"
+	"gocloud.dev/docstore/memdocstore"
 	_ "gocloud.dev/docstore/memdocstore"
 
 	"github.com/szabba/upstep/planning"
@@ -80,9 +81,10 @@ func Test_PlannerRepository_ConflictAfterConcurrentModification(t *testing.T) {
 }
 
 func newPlannerRepo(t *testing.T) *PlannerRepository {
-	repo, err := NewPlannerRepository()
+	coll, err := memdocstore.OpenCollection("ID", nil)
 	assert.That(
 		err == nil, t.Fatalf,
 		"unexpected error creating planner repository: %s", err)
-	return repo
+
+	return NewPlannerRepository(coll)
 }

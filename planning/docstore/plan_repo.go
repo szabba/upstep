@@ -10,19 +10,19 @@ import (
 	"github.com/szabba/upstep/planning"
 )
 
-type PlannerRepository struct {
+type PlanRepository struct {
 	coll *docstore.Collection
 }
 
-func NewPlannerRepository(coll *docstore.Collection) *PlannerRepository {
-	return &PlannerRepository{coll}
+func NewPlanRepository(coll *docstore.Collection) *PlanRepository {
+	return &PlanRepository{coll}
 }
 
-var _ planning.PlannerRepository = new(PlannerRepository)
+var _ planning.PlanRepository = new(PlanRepository)
 
-func (repo *PlannerRepository) Get(ctx context.Context, id planning.PlannerID) (*planning.Planner, error) {
+func (repo *PlanRepository) Get(ctx context.Context, id planning.PlanID) (*planning.Plan, error) {
 	rawID := id.Value()
-	doc := _PlannerDoc{ID: rawID}
+	doc := _PlanDoc{ID: rawID}
 
 	err := repo.coll.Get(ctx, &doc)
 	if err != nil {
@@ -32,8 +32,8 @@ func (repo *PlannerRepository) Get(ctx context.Context, id planning.PlannerID) (
 	return doc.ToDomain(repo.coll)
 }
 
-func (repo *PlannerRepository) Save(ctx context.Context, step *planning.Planner) error {
-	doc := &_PlannerDoc{}
+func (repo *PlanRepository) Save(ctx context.Context, step *planning.Plan) error {
+	doc := &_PlanDoc{}
 	err := doc.FromDomain(step, repo.coll)
 	if err != nil {
 		return translateSaveError(err)

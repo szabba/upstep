@@ -20,6 +20,7 @@ func render(tmpl *template.Template, filename string, data interface{}) {
 
 	fmted, err := format.Source(rendered.Bytes())
 	if err != nil {
+		log.Printf("rendered template:\n\n%s\n\n", rendered.Bytes())
 		log.Panicf("problem generating %q: %s", filename, err)
 	}
 

@@ -5,7 +5,7 @@ import (
 	"testing"
 
 	"github.com/szabba/assert"
-	_ "gocloud.dev/docstore/memdocstore"
+	"gocloud.dev/docstore/memdocstore"
 
 	"github.com/szabba/upstep/planning"
 	. "github.com/szabba/upstep/planning/docstore"
@@ -80,10 +80,10 @@ func Test_StepRepository_ConflictAfterConcurrentModification(t *testing.T) {
 }
 
 func newStepRepo(t *testing.T) *StepRepository {
-	repo, err := NewStepRepository()
+	coll, err := memdocstore.OpenCollection("ID", nil)
 	assert.That(
 		err == nil, t.Fatalf,
 		"unexpected error creating step repository: %s", err)
 
-	return repo
+	return NewStepRepository(coll)
 }
