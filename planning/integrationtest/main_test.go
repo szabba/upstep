@@ -90,10 +90,20 @@ func (srv *Server) Kill(t *testing.T) {
 		t.Fatalf, "cannot kill process that was not started")
 
 	err := srv.cmd.Process.Kill()
-	assert.That(err == nil, t.Logf, "failed to kill %s (PID = %d): %s", _Executable, srv.cmd.Process.Pid, err)
+	assert.That(
+		err == nil,
+		t.Logf, "failed to kill %s (PID = %d): %s", _Executable, srv.cmd.Process.Pid, err)
 
 	err = srv.cmd.Wait()
-	assert.That(err == nil, t.Logf, "failed to wait for %s (PID = %d): %s", _Executable, srv.cmd.Process.Pid, err)
+	assert.That(
+		err == nil,
+		t.Logf, "failed to wait for %s (PID = %d): %s", _Executable, srv.cmd.Process.Pid, err)
 
-	assert.That(srv.cmd.ProcessState.ExitCode() == 0, t.Logf, "%s", srv.out)
+	assert.That(
+		srv.runOK() && !t.Failed(),
+		t.Logf, "%s", srv.out)
+}
+
+func (srv *Server) runOK() bool {
+	return srv.cmd.ProcessState.ExitCode() == 0
 }
