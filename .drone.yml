@@ -3,18 +3,18 @@ name: default
 
 trigger:
   event:
-  - pull_request
+    - pull_request
 
 steps:
-- name: build
-  image: golang:1.12
-  environment:
-    GOPROXY: https://proxy.golang.org
-  commands:
-  - git merge-base --is-ancestor master HEAD || (echo "Cannot fast-forward merge into master." && exit 1)
-  - go mod tidy
-  - ./check-diff-empty.sh
-  - go generate -x ./...
-  - ./check-diff-empty.sh
-  - go build ./...
-  - go test -cover -coverpkg ./... ./...
+  - name: build
+    image: golang:1.12
+    environment:
+      GOPROXY: https://proxy.golang.org
+    commands:
+      - git merge-base --is-ancestor master HEAD || (echo "Cannot fast-forward merge into master." && exit 1)
+      - go mod tidy
+      - ./check-diff-empty.sh
+      - go generate -x ./...
+      - ./check-diff-empty.sh
+      - go build ./...
+      - go test -cover ./...
