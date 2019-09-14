@@ -10,19 +10,19 @@ import (
 )
 
 func TestPlanCanBeRetrieved(t *testing.T) {
-	t.Skip()
-
 	// given
 	srv := startServer(t)
 	defer srv.Close()
 
-	loadFixture(t, "plan")
+	loadFixture(t, "GET_plan_id.json")
 	planID := "plan-id"
 
 	url := fmt.Sprintf("%s/plan/%s", srv.URL, planID)
 
 	// when
 	resp, err := http.Get(url)
+
+	// then
 	assert.That(err == nil, t.Errorf, "error on GET: %s", err)
 	defer resp.Body.Close()
 	assert.That(
