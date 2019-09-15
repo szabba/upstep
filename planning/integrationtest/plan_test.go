@@ -36,6 +36,25 @@ func TestPlanCanBeRetrieved(t *testing.T) {
 	assert.That(dto.Name == "Learn Go", t.Errorf, "got plan name %q, want %q", dto.Name, "Learn Go")
 }
 
+func TestNonexistentPlanCannotBeRetrieved(t *testing.T) {
+	// given
+	srv := startServer(t)
+	defer srv.Close()
+
+	loadFixture(t, "GET_plan_id.json")
+	planID := "nonexistent-plan-id"
+
+	url := fmt.Sprintf("%s/plan/%s", srv.URL, planID)
+
+	// when
+	resp, err := http.Get(url)
+
+	// then
+	assert.That(err == nil, t.Errorf, "error on GET: %s", err)
+	defer resp.Body.Close()
+	assertHTTPStatus(resp, http.StatusNotFound, t.Fatalf)
+}
+
 func assertHTTPStatus(resp *http.Response, wanted int, onErr assert.ErrorFunc) {
 	assert.That(
 		resp.StatusCode == wanted,
