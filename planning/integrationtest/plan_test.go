@@ -3,11 +3,14 @@ package integrationtest
 import (
 	"encoding/json"
 	"fmt"
+	"io"
 	"net/http"
 	"testing"
 
 	"github.com/szabba/assert"
 )
+
+const ApplicationJson = "application/json"
 
 func TestPlanCanBeRetrieved(t *testing.T) {
 	// given
@@ -25,18 +28,11 @@ func TestPlanCanBeRetrieved(t *testing.T) {
 	// then
 	assert.That(err == nil, t.Errorf, "error on GET: %s", err)
 	defer resp.Body.Close()
-	assertHTTPStatus(resp, 200, t.Fatalf)
-
-	assert.That(
-		resp.Header.Get("Content-Type") == "application/json",
-		t.Errorf, "got content type %s, want %s",
-		resp.Header.Get("Content-Type"), "application/json")
+	assertHTTPStatus(resp, http.StatusOK, t.Fatalf)
+	assertContentType(resp, ApplicationJson, t.Errorf)
 
 	var dto PlanDTO
-	dec := json.NewDecoder(resp.Body)
-	dec.DisallowUnknownFields()
-	err = dec.Decode(&dto)
-	assert.That(err == nil, t.Fatalf, "error parsing response: %s", err)
+	decodeStrictly(resp.Body, &dto, t.Fatalf)
 }
 
 func assertHTTPStatus(resp *http.Response, wanted int, onErr assert.ErrorFunc) {
@@ -44,6 +40,23 @@ func assertHTTPStatus(resp *http.Response, wanted int, onErr assert.ErrorFunc) {
 		resp.StatusCode == wanted,
 		onErr, "got status %s, want %s",
 		NiceStatus(resp.StatusCode), NiceStatus(wanted))
+}
+
+func assertContentType(resp *http.Response, wanted string, onErr assert.ErrorFunc) {
+	assert.That(
+		resp.Header.Get("Content-Type") == wanted,
+		onErr, "got content type %q, want %q",
+		resp.Header.Get("Content-Type"), wanted)
+}
+
+func decodeStrictly(r io.Reader, into interface{}, onErr assert.ErrorFunc) {
+	if r == nil {
+		onErr("cannot decode from nil Reader")
+		return
+	}
+	dec := json.NewDecoder(r)
+	err := dec.Decode(into)
+	assert.That(err == nil, onErr, "error decoding JSON: %s", err)
 }
 
 type PlanDTO struct {
