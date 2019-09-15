@@ -24,16 +24,24 @@ type Plan struct {
 	id        PlanID
 	rev       PlanRevision
 	plannerID PlannerID
+	name      PlanName
 }
 
+// A PlanName is a name given by the planner to their plan.
+type PlanName string
+
 // NewPlan creeates a new plan.
-func NewPlan(id PlanID, planner *Planner, rev PlanRevision) *Plan {
+func NewPlan(id PlanID, plannerID PlannerID, name PlanName, rev PlanRevision) *Plan {
 	return &Plan{
 		id:        id,
 		rev:       rev,
-		plannerID: planner.ID(),
+		plannerID: plannerID,
+		name:      name,
 	}
 }
+
+// Name returns the name the planner gave to the plan.
+func (plan *Plan) Name() PlanName { return plan.name }
 
 // Progress measures the progress towards the plan goal.
 //

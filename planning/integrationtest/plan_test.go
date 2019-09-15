@@ -33,6 +33,7 @@ func TestPlanCanBeRetrieved(t *testing.T) {
 
 	var dto PlanDTO
 	decodeStrictly(resp.Body, &dto, t.Fatalf)
+	assert.That(dto.Name == "Learn Go", t.Errorf, "got plan name %q, want %q", dto.Name, "Learn Go")
 }
 
 func assertHTTPStatus(resp *http.Response, wanted int, onErr assert.ErrorFunc) {

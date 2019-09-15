@@ -2,6 +2,7 @@ package httpglue
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 
 	"github.com/gorilla/mux"
@@ -26,7 +27,20 @@ func NewPlans(repo planning.PlanRepository) *PlanHandlers {
 func (h *PlanHandlers) GetOne(w http.ResponseWriter, r *http.Request) {
 	rawID := mux.Vars(r)["id"]
 	id := planning.PlanIDOf(rawID)
-	plan, _ := h.repo.Get(r.Context(), id)
+
+	plan, err := h.repo.Get(r.Context(), id)
+	if err == nil {
+		h.writePlan(w, plan)
+	} else {
+		fmt.Print(err)
+	}
+}
+
+func (h *PlanHandlers) writePlan(w http.ResponseWriter, plan *planning.Plan) {
 	w.Header().Add("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(plan)
+	var dto struct {
+		Name string
+	}
+	dto.Name = string(plan.Name())
+	json.NewEncoder(w).Encode(dto)
 }

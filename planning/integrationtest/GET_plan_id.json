@@ -1,7 +1,9 @@
 {
     "mem://plans/ID": [
         {
-            "ID": "plan-id"
+            "ID": "plan-id",
+            "Name": "Learn Go",
+            "DocumentRevision": 1
         }
     ]
 }
