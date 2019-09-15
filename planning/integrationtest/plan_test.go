@@ -25,10 +25,7 @@ func TestPlanCanBeRetrieved(t *testing.T) {
 	// then
 	assert.That(err == nil, t.Errorf, "error on GET: %s", err)
 	defer resp.Body.Close()
-	assert.That(
-		resp.StatusCode == http.StatusOK,
-		t.Fatalf, "got status %s, want %s",
-		NiceStatus(resp.StatusCode), NiceStatus(http.StatusOK))
+	assertHTTPStatus(resp, 200, t.Fatalf)
 
 	assert.That(
 		resp.Header.Get("Content-Type") == "application/json",
@@ -36,8 +33,17 @@ func TestPlanCanBeRetrieved(t *testing.T) {
 		resp.Header.Get("Content-Type"), "application/json")
 
 	var dto PlanDTO
-	err = json.NewDecoder(resp.Body).Decode(&dto)
+	dec := json.NewDecoder(resp.Body)
+	dec.DisallowUnknownFields()
+	err = dec.Decode(&dto)
 	assert.That(err == nil, t.Fatalf, "error parsing response: %s", err)
+}
+
+func assertHTTPStatus(resp *http.Response, wanted int, onErr assert.ErrorFunc) {
+	assert.That(
+		resp.StatusCode == wanted,
+		onErr, "got status %s, want %s",
+		NiceStatus(resp.StatusCode), NiceStatus(wanted))
 }
 
 type PlanDTO struct {
