@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
+	"github.com/rs/zerolog/log"
 
 	"github.com/szabba/upstep/planning"
 )
@@ -40,12 +41,16 @@ func (h *PlanHandler) GetOne(w http.ResponseWriter, r *http.Request) {
 	plan, err := h.repo.Get(r.Context(), id)
 
 	if err == nil {
+		log.Info().
+			Str("plan-id", plan.ID().Value()).
+			Msg("found plan")
 		h.writePlan(w, plan)
 
 	} else if errors.Is(err, planning.ErrNotFound) {
 		writeError(w, http.StatusNotFound)
 
 	} else {
+		log.Error().Err(err)
 		writeError(w, http.StatusInternalServerError)
 	}
 }
@@ -53,9 +58,13 @@ func (h *PlanHandler) GetOne(w http.ResponseWriter, r *http.Request) {
 func (h *PlanHandler) writePlan(w http.ResponseWriter, plan *planning.Plan) {
 	w.Header().Add(_ContentType, _ApplicationJSON)
 	var dto struct {
-		Name string
+		ID     string
+		Name   string
+		Status string
 	}
-	dto.Name = string(plan.Name())
+	dto.ID = plan.ID().Value()
+	dto.Name = plan.Name().String()
+	dto.Status = plan.Status().String()
 	json.NewEncoder(w).Encode(dto)
 }
 

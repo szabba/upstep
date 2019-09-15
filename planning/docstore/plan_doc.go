@@ -10,6 +10,7 @@ type _PlanDoc struct {
 	DocumentRevision interface{}
 	PlannerID        string
 	Name             string
+	Status           string
 }
 
 func (doc *_PlanDoc) FromDomain(plan *planning.Plan, coll *docstore.Collection) error {
@@ -25,6 +26,7 @@ func (doc *_PlanDoc) ToDomain(coll *docstore.Collection) (*planning.Plan, error)
 	rev := planning.PlanRevisionOf(rawRev)
 	plannerID := planning.PlannerIDOf(doc.PlannerID)
 	name := planning.PlanName(doc.Name)
-	plan := planning.NewPlan(id, plannerID, name, rev)
+	status := planning.PlanStatus(doc.Status)
+	plan := planning.NewPlan(id, plannerID, name, status, rev)
 	return plan, nil
 }

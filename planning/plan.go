@@ -25,23 +25,30 @@ type Plan struct {
 	rev       PlanRevision
 	plannerID PlannerID
 	name      PlanName
+	status    PlanStatus
 }
 
 // A PlanName is a name given by the planner to their plan.
 type PlanName string
 
+func (n PlanName) String() string { return string(n) }
+
 // NewPlan creeates a new plan.
-func NewPlan(id PlanID, plannerID PlannerID, name PlanName, rev PlanRevision) *Plan {
+func NewPlan(id PlanID, plannerID PlannerID, name PlanName, status PlanStatus, rev PlanRevision) *Plan {
 	return &Plan{
 		id:        id,
 		rev:       rev,
 		plannerID: plannerID,
 		name:      name,
+		status:    status,
 	}
 }
 
-// Name returns the name the planner gave to the plan.
+// Name is the name the planner gave to the plan.
 func (plan *Plan) Name() PlanName { return plan.name }
+
+// Status is the current status of the plan.
+func (plan *Plan) Status() PlanStatus { return plan.status }
 
 // Progress measures the progress towards the plan goal.
 //
@@ -53,4 +60,23 @@ func (plan *Plan) Progress() Progress {
 // AvailableSteps returns a slice of steps that can be taken to get closer to the plan goal.
 func (plan *Plan) AvailableSteps() []*Step {
 	return nil
+}
+
+type PlanStatus string
+
+const (
+	PlanActive    = PlanStatus("Active")
+	PlanSuspended = PlanStatus("Suspended")
+	PlanComplete  = PlanStatus("Complete")
+)
+
+func (s PlanStatus) Valid() bool {
+	return s == PlanActive || s == PlanSuspended || s == PlanComplete
+}
+
+func (s PlanStatus) String() string {
+	if !s.Valid() {
+		return "UnknwonPlanStatus:" + string(s)
+	}
+	return string(s)
 }

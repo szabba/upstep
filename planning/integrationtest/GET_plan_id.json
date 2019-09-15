@@ -3,6 +3,7 @@
         {
             "ID": "plan-id",
             "Name": "Learn Go",
+            "Status": "Active",
             "DocumentRevision": 1
         }
     ]

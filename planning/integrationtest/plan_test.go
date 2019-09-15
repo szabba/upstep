@@ -1,12 +1,16 @@
 package integrationtest
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"io"
 	"net/http"
+	"os"
+	"strings"
 	"testing"
 
+	"github.com/rs/zerolog/log"
 	"github.com/szabba/assert"
 )
 
@@ -16,6 +20,7 @@ func TestPlanCanBeRetrieved(t *testing.T) {
 	// given
 	srv := startServer(t)
 	defer srv.Close()
+	defer bufferLogs(t)()
 
 	loadFixture(t, "GET_plan_id.json")
 	planID := "plan-id"
@@ -33,7 +38,9 @@ func TestPlanCanBeRetrieved(t *testing.T) {
 
 	var dto PlanDTO
 	decodeStrictly(resp.Body, &dto, t.Fatalf)
+	assert.That(dto.ID == planID, t.Errorf, "got plan ID %q, want %q", dto.Name, planID)
 	assert.That(dto.Name == "Learn Go", t.Errorf, "got plan name %q, want %q", dto.Name, "Learn Go")
+	assert.That(dto.Status == "Active", t.Errorf, "got plan status %q, want %q", dto.Status, "Active")
 }
 
 func TestNonexistentPlanCannotBeRetrieved(t *testing.T) {
@@ -53,6 +60,17 @@ func TestNonexistentPlanCannotBeRetrieved(t *testing.T) {
 	assert.That(err == nil, t.Errorf, "error on GET: %s", err)
 	defer resp.Body.Close()
 	assertHTTPStatus(resp, http.StatusNotFound, t.Fatalf)
+}
+
+func bufferLogs(t *testing.T) func() {
+	var buf bytes.Buffer
+	log.Logger = log.Logger.Output(&buf)
+	return func() {
+		log.Logger = log.Logger.Output(os.Stderr)
+		for _, line := range strings.Split(buf.String(), "\n") {
+			t.Log(line)
+		}
+	}
 }
 
 func assertHTTPStatus(resp *http.Response, wanted int, onErr assert.ErrorFunc) {
@@ -82,8 +100,8 @@ func decodeStrictly(r io.Reader, into interface{}, onErr assert.ErrorFunc) {
 type PlanDTO struct {
 	ID     string
 	Name   string
-	Steps  []PlanStepDTO
 	Status string
+	Steps  []PlanStepDTO
 }
 
 type PlanStepDTO struct {

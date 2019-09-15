@@ -8,6 +8,7 @@ import (
 	"reflect"
 	"testing"
 
+	
 	"github.com/gorilla/mux"
 	"github.com/szabba/assert"
 	"go.uber.org/dig"
@@ -30,8 +31,8 @@ func startServer(t *testing.T) *httptest.Server {
 	var router *mux.Router
 	c := dig.New()
 	c.Provide(newPlanRepository)
-	c.Provide(httpglue.NewPlans)
-	c.Provide(httpglue.NewMux)
+	c.Provide(httpglue.NewPlanHandler)
+	c.Provide(httpglue.NewRouter)
 	err := c.Invoke(func(r *mux.Router) { router = r })
 	assert.That(err == nil, t.Fatalf, "cannot wire server: %s", err)
 	return httptest.NewServer(router)
