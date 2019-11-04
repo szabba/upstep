@@ -11,6 +11,7 @@ steps:
     environment:
       GOPROXY: https://proxy.golang.org
     commands:
+      - go version
       - git merge-base --is-ancestor master HEAD || (echo "Cannot fast-forward merge into master." && exit 1)
       - go mod tidy
       - ./check-diff-empty.sh
